@@ -64,6 +64,14 @@ RUN set -ex \
     && mkdir -p /build/ \
     && git clone https://github.com/timescale/timescaledb /build/timescaledb \
     \
+    # Build tdigest \
+    && git clone https://github.com/tvondra/tdigest.git /build/tdigest\
+    && export CC=clang \
+    && cd /build/tdigest \
+    && make \
+    && make install \
+    && cd ~ \
+    \
     && apk add --no-cache --virtual .build-deps \
                 coreutils \
                 dpkg-dev dpkg \

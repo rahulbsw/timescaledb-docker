@@ -80,6 +80,14 @@ RUN set -ex \
     && cd build && make install \
     && cd ~ \
     \
+    # Build tdigest \
+    && git clone https://github.com/tvondra/tdigest.git /build/tdigest\
+    && export CC=clang \
+    && cd /build/tdigest \
+    && make \
+    && make install \
+    && cd ~ \
+    \
     && apt-get autoremove --purge -y \
             \
             build-essential \
@@ -97,5 +105,6 @@ RUN set -ex \
         /tmp/*               \
         /var/tmp/*
 RUN sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'timescaledb,\2'/;s/,'/'/" /opt/bitnami/postgresql/share/postgresql.conf.sample /opt/bitnami/postgresql/conf/postgresql.conf
+ 
 
 USER 1001
