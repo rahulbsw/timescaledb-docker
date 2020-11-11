@@ -72,7 +72,6 @@ RUN set -ex \
             wget \
             llvm \
             clang \
-            clang-dev \
     && mkdir -p /build/ \
     && git clone https://github.com/timescale/timescaledb /build/timescaledb \
     \
@@ -101,7 +100,6 @@ RUN set -ex \
             libc-dev \
             make \
             cmake \
-            clang-dev \
     && apt-get clean -y \
     && rm -rf \
       "${HOME}/.cache" \

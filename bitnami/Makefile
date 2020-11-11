@@ -17,7 +17,7 @@ default: image
 	docker build -f ./Dockerfile --build-arg PG_VERSION=$(PG_VER_NUMBER) $(TAG) ..
 	touch .build_$(VERSION)_$(PG_VER)-bitnami
 
-image: .build_$(VERSION)_$(PG_VER)
+	: .build_$(VERSION)_$(PG_VER)
 
 push: image
 	docker push $(TAG_VERSION)
