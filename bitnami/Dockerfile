@@ -70,6 +70,9 @@ RUN set -ex \
             make \
             cmake \
             wget \
+            llvm \
+            clang \
+            clang-dev \
     && mkdir -p /build/ \
     && git clone https://github.com/timescale/timescaledb /build/timescaledb \
     \
@@ -98,6 +101,7 @@ RUN set -ex \
             libc-dev \
             make \
             cmake \
+            clang-dev \
     && apt-get clean -y \
     && rm -rf \
       "${HOME}/.cache" \
@@ -105,6 +109,7 @@ RUN set -ex \
         /tmp/*               \
         /var/tmp/*
 RUN sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'timescaledb,\2'/;s/,'/'/" /opt/bitnami/postgresql/share/postgresql.conf.sample /opt/bitnami/postgresql/conf/postgresql.conf
+RUN sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'tdigest,\2'/;s/,'/'/" /usr/local/share/postgresql/postgresql.conf.sample
  
 
 USER 1001

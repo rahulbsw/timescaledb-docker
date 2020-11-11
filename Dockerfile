@@ -71,7 +71,10 @@ RUN set -ex \
                 libc-dev \
                 make \
                 cmake \
-                util-linux-dev \
+                util-linux-dev \             
+                llvm \
+                clang \
+                clang-dev \
     \
     # Build current version \
     && cd /build/timescaledb && rm -fr build \
@@ -80,9 +83,9 @@ RUN set -ex \
     && cd build && make install \
     && cd ~ \
     \
-     # Build tdigest \
+    # Build tdigest \
     && git clone https://github.com/tvondra/tdigest.git /build/tdigest \
-    # && export CC=clang \
+    && export CC=clang \
     && cd /build/tdigest \
     && make \
     && make install \
@@ -91,4 +94,5 @@ RUN set -ex \
     && if [ "${OSS_ONLY}" != "" ]; then rm -f $(pg_config --pkglibdir)/timescaledb-tsl-*.so; fi \
     && apk del .fetch-deps .build-deps \
     && rm -rf /build \
-    && sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'timescaledb,\2'/;s/,'/'/" /usr/local/share/postgresql/postgresql.conf.sample
+    && sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'timescaledb,\2'/;s/,'/'/" /usr/local/share/postgresql/postgresql.conf.sample \
+    && sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'tdigest,\2'/;s/,'/'/" /usr/local/share/postgresql/postgresql.conf.sample
