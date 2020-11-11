@@ -64,14 +64,6 @@ RUN set -ex \
     && mkdir -p /build/ \
     && git clone https://github.com/timescale/timescaledb /build/timescaledb \
     \
-    # Build tdigest \
-    && git clone https://github.com/tvondra/tdigest.git /build/tdigest\
-    && export CC=clang \
-    && cd /build/tdigest \
-    && make \
-    && make install \
-    && cd ~ \
-    \
     && apk add --no-cache --virtual .build-deps \
                 coreutils \
                 dpkg-dev dpkg \
@@ -86,6 +78,14 @@ RUN set -ex \
     && git checkout ${TIMESCALEDB_VERSION} \
     && ./bootstrap -DREGRESS_CHECKS=OFF -DPROJECT_INSTALL_METHOD="docker"${OSS_ONLY} \
     && cd build && make install \
+    && cd ~ \
+    \
+     # Build tdigest \
+    && git clone https://github.com/tvondra/tdigest.git /build/tdigest \
+    # && export CC=clang \
+    && cd /build/tdigest \
+    && make \
+    && make install \
     && cd ~ \
     \
     && if [ "${OSS_ONLY}" != "" ]; then rm -f $(pg_config --pkglibdir)/timescaledb-tsl-*.so; fi \
