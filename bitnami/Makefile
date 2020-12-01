@@ -25,6 +25,8 @@ push: image
 		docker push $(TAG_LATEST); \
 	fi
 
+image: .build_$(VERSION)_$(PG_VER)
+
 clean:
 	rm -f *~ .build_*
 
