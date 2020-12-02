@@ -68,6 +68,7 @@ RUN set -ex \
                 coreutils \
                 dpkg-dev dpkg \
                 gcc \
+                g++ \
                 libc-dev \
                 make \
                 cmake \
@@ -84,6 +85,14 @@ RUN set -ex \
     && cd ~ \
     \
     # Build tdigest \
+    && git clone https://github.com/citusdata/postgresql-topn.git /build/postgresql-topn \
+    && cd /build/postgresql-topn \
+    && make \
+    && make install \
+    && git clone https://github.com/citusdata/postgresql-hll.git /build/postgresql-hll \
+    && cd /build/postgresql-hll \
+    && make \
+    && make install \
     && git clone https://github.com/tvondra/tdigest.git /build/tdigest \
     && export CC=clang \
     && cd /build/tdigest \
@@ -95,4 +104,7 @@ RUN set -ex \
     && apk del .fetch-deps .build-deps \
     && rm -rf /build \
     && sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'timescaledb,\2'/;s/,'/'/" /usr/local/share/postgresql/postgresql.conf.sample \
-    && sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'tdigest,\2'/;s/,'/'/" /usr/local/share/postgresql/postgresql.conf.sample
+    && sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'tdigest,\2'/;s/,'/'/" /usr/local/share/postgresql/postgresql.conf.sample \
+    && sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'postgresql-topn,\2'/;s/,'/'/" /usr/local/share/postgresql/postgresql.conf.sample \
+    && sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'postgresql-hll,\2'/;s/,'/'/" /usr/local/share/postgresql/postgresql.conf.sample
+    

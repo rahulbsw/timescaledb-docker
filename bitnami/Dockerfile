@@ -66,6 +66,7 @@ RUN set -ex \
             \
             dpkg-dev \
             gcc \
+            g++ \
             libc-dev \
             make \
             cmake \
@@ -83,7 +84,15 @@ RUN set -ex \
     && cd ~ \
     \
     # Build tdigest \
-    && git clone https://github.com/tvondra/tdigest.git /build/tdigest\
+    && git clone https://github.com/citusdata/postgresql-topn.git /build/postgresql-topn \
+    && cd /build/postgresql-topn \
+    && make \
+    && make install \
+    && git clone https://github.com/citusdata/postgresql-hll.git /build/postgresql-hll \
+    && cd /build/postgresql-hll \
+    && make  CC=gcc CXX=gcc\
+    && make install \
+    && git clone https://github.com/tvondra/tdigest.git /build/tdigest \
     && export CC=clang \
     && cd /build/tdigest \
     && make \
@@ -100,6 +109,7 @@ RUN set -ex \
             libc-dev \
             make \
             cmake \
+            g++ \
     && apt-get clean -y \
     && rm -rf \
       "${HOME}/.cache" \
@@ -108,6 +118,8 @@ RUN set -ex \
         /var/tmp/*
 RUN sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'timescaledb,\2'/;s/,'/'/" /opt/bitnami/postgresql/share/postgresql.conf.sample /opt/bitnami/postgresql/conf/postgresql.conf
 RUN sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'tdigest,\2'/;s/,'/'/" /opt/bitnami/postgresql/share/postgresql.conf.sample /opt/bitnami/postgresql/conf/postgresql.conf
+RUN sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'postgresql-topn,\2'/;s/,'/'/" /opt/bitnami/postgresql/share/postgresql.conf.sample /opt/bitnami/postgresql/conf/postgresql.conf
+RUN sed -r -i "s/[#]*\s*(shared_preload_libraries)\s*=\s*'(.*)'/\1 = 'postgresql-hll,\2'/;s/,'/'/" /opt/bitnami/postgresql/share/postgresql.conf.sample /opt/bitnami/postgresql/conf/postgresql.conf
  
 
 USER 1001
