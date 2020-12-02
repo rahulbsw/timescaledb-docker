@@ -91,7 +91,7 @@ RUN set -ex \
     && make install \
     && git clone https://github.com/citusdata/postgresql-hll.git /build/postgresql-hll \
     && cd /build/postgresql-hll \
-    && make \
+    && make  CC=gcc CXX=gcc \
     && make install \
     && git clone https://github.com/tvondra/tdigest.git /build/tdigest \
     && export CC=clang \
